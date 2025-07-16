@@ -1,0 +1,7 @@
+[2025-07-16T18:32:30.961Z] INFO: ✅ Connected to MongoDB
+[2025-07-16T18:32:30.971Z] INFO: 🚀 Server running on http://localhost:5000
+[2025-07-16T18:35:29.235Z] INFO: User logged in: testuser@example.com
+[2025-07-16T18:38:55.548Z] INFO: ✅ Connected to MongoDB
+[2025-07-16T18:38:55.554Z] INFO: 🚀 Server running on http://localhost:5000
+[2025-07-16T18:39:02.552Z] INFO: Token verified for user ID: 686ec1d422e003c3f6f520d0
+[2025-07-16T18:39:02.554Z] INFO: Accessed dashboard route
