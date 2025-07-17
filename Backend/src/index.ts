@@ -6,12 +6,18 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
-import dashboardRoutes from "./routes/dashboardRoutes"; // ✅ NEW: Protected route
-import logger from "./utils/logger"; // ✅ NEW: Replace console with logger
+import dashboardRoutes from "./routes/dashboardRoutes"; // ✅ Protected route
+import logger from "./utils/logger"; // ✅ Logging with Winston
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/auth_demo";
+const MONGO_URI = process.env.MONGO_URI;
+
+// ❌ Fail fast if MONGO_URI is missing
+if (!MONGO_URI) {
+  logger.error("❌ MONGO_URI is not defined in environment variables. Exiting...");
+  process.exit(1);
+}
 
 // Middleware
 app.use(cors({
@@ -32,4 +38,5 @@ mongoose.connect(MONGO_URI)
   })
   .catch((err) => {
     logger.error("❌ MongoDB connection error: " + err);
+    process.exit(1); // 🔴 Exit if DB fails to connect
   });
