@@ -12,13 +12,4 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 
-// ✅ Protected route (like dashboard)
-router.get("/dashboard", authenticateToken, (req, res) => {
-  logger.info("Accessed dashboard route");
-  res.status(STATUS_CODES.OK).json({
-    message: MESSAGES.DASHBOARD_SUCCESS,
-    user: (req as any).user,
-  });
-});
-
 export default router;
