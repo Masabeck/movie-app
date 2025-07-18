@@ -17,7 +17,6 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
-    // ✅ Client-side validation with constants
     if (!email || !password) {
       setError(MESSAGES.FILL_ALL_FIELDS);
       return;
@@ -69,6 +68,10 @@ const Login = () => {
         <button type="submit">Login</button>
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
+
+      <p style={{ marginTop: '1rem' }}>
+        Don't have an account? <a href="/signup">Sign up</a>
+      </p>
     </div>
   );
 };
