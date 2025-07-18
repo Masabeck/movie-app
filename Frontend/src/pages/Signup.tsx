@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import MESSAGES from '../constants/messages';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,6 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const validateEmail = (email: string): boolean => {
-    // Basic regex for email format
     return /\S+@\S+\.\S+/.test(email);
   };
 
@@ -17,32 +17,31 @@ const Signup = () => {
     e.preventDefault();
     setError('');
 
-    // ✅ Client-side validation
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError(MESSAGES.FILL_ALL_FIELDS);
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Please enter a valid email address.');
+      setError(MESSAGES.INVALID_EMAIL);
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      setError(MESSAGES.SHORT_PASSWORD);
       return;
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post('http://localhost:5000/api/auth/register', {
         email,
         password,
       });
 
-      localStorage.setItem('token', res.data.token);
-      navigate('/dashboard');
+      // ✅ Do not log user in immediately — go to login screen
+      navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed');
+      setError(err.response?.data?.message || MESSAGES.SIGNUP_FAILED);
     }
   };
 
