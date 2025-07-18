@@ -17,7 +17,6 @@ const Signup = () => {
     e.preventDefault();
     setError('');
 
-    // ✅ Client-side validation using constants
     if (!email || !password) {
       setError(MESSAGES.FILL_ALL_FIELDS);
       return;
@@ -34,13 +33,13 @@ const Signup = () => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post('http://localhost:5000/api/auth/register', {
         email,
         password,
       });
 
-      localStorage.setItem('token', res.data.token);
-      navigate('/dashboard');
+      // ✅ Do not log user in immediately — go to login screen
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || MESSAGES.SIGNUP_FAILED);
     }
