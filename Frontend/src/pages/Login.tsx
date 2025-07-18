@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import MESSAGES from "../constants/messages";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,19 +17,19 @@ const Login = () => {
     e.preventDefault();
     setError('');
 
-    // ✅ Client-side validation
+    // ✅ Client-side validation with constants
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError(MESSAGES.FILL_ALL_FIELDS);
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Please enter a valid email address.');
+      setError(MESSAGES.INVALID_EMAIL);
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      setError(MESSAGES.SHORT_PASSWORD);
       return;
     }
 
@@ -41,7 +42,7 @@ const Login = () => {
       localStorage.setItem('token', res.data.token);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || MESSAGES.LOGIN_FAILED);
     }
   };
 

@@ -1,36 +1,42 @@
 // src/index.ts
+import dotenv from "dotenv"; // ✅ Load env first
+dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes";
-import cors from 'cors';
+import dashboardRoutes from "./routes/dashboardRoutes"; // ✅ Protected route
+import logger from "./utils/logger"; // ✅ Logging with Winston
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 
+// ❌ Fail fast if MONGO_URI is missing
+if (!MONGO_URI) {
+  logger.error("❌ MONGO_URI is not defined in environment variables. Exiting...");
+  process.exit(1);
+}
+
+// Middleware
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }));
-
-app.use(express.json());
-app.use('/api/auth', authRoutes);
-
-
-dotenv.config();
 app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/dashboard", dashboardRoutes); // ✅ Protected route
 
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/auth_demo";
-
-mongoose
-  .connect(MONGO_URI)
+// DB connection
+mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log("✅ Connected to MongoDB");
-    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+    logger.info("✅ Connected to MongoDB");
+    app.listen(PORT, () => logger.info(`🚀 Server running on http://localhost:${PORT}`));
   })
   .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
+    logger.error("❌ MongoDB connection error: " + err);
+    process.exit(1); // 🔴 Exit if DB fails to connect
   });
