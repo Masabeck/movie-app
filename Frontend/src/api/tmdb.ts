@@ -1,25 +1,15 @@
-// src/api/tmdb.ts
+// Frontend/src/api/tmdb.ts
 import axios from 'axios';
 
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-const BASE_URL = 'https://api.themoviedb.org/3';
-
-const tmdb = axios.create({
-  baseURL: BASE_URL,
-  params: {
-    api_key: API_KEY,
-    language: 'en-US',
-  },
-});
-
-export const searchMovies = async (query: string, page = 1) => {
-  const res = await tmdb.get('/search/movie', {
-    params: { query, page },
+export const searchMovies = async (query: string) => {
+  const res = await axios.get(`http://localhost:5000/api/tmdb/search`, {
+    params: { query },
   });
   return res.data;
 };
 
-export const getMovieDetails = async (movieId: number) => {
-  const res = await tmdb.get(`/movie/${movieId}`);
+// ✅ New function to get movie details
+export const getMovieDetails = async (id: number | string) => {
+  const res = await axios.get(`http://localhost:5000/api/tmdb/movie/${id}`);
   return res.data;
 };

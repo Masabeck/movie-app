@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import MyProfile from './pages/MyProfile';
 import ProtectedRoute from './components/ProtectedRoute'; // Ensure this path is correct
 
 function App() {
@@ -15,6 +16,13 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile" element={
+            <ProtectedRoute>
+              <MyProfile />
             </ProtectedRoute>
           }
         />

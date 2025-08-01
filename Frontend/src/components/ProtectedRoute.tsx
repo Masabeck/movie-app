@@ -1,17 +1,18 @@
 // src/components/ProtectedRoute.tsx
 import { Navigate } from 'react-router-dom';
-import { ReactNode, JSX } from 'react';
-import { isTokenExpired } from '../utils/auth'; // ✅ import
+import { ReactNode } from 'react';
+import { isTokenExpired } from '../utils/auth';
 
-interface Props {
+interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-const ProtectedRoute = ({ children }: Props): JSX.Element => {
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const token = localStorage.getItem('token');
 
-  if (!token || isTokenExpired()) {
-    localStorage.removeItem('token'); // Clean up expired token
+  const isInvalid = !token || isTokenExpired();
+  if (isInvalid) {
+    localStorage.removeItem('token');
     return <Navigate to="/" replace />;
   }
 

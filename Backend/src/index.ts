@@ -5,9 +5,11 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import tmdbRoutes from './routes/tmdb';
 import authRoutes from "./routes/authRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes"; // ✅ Protected route
 import logger from "./utils/logger"; // ✅ Logging with Winston
+import favoriteRoutes from './routes/favoriteRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,8 +29,10 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
+app.use('/api/tmdb', tmdbRoutes); // ✅ Register TMDB route
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes); // ✅ Protected route
+app.use('/api/favorites', favoriteRoutes); // ✅ Favorites route
 
 // DB connection
 mongoose.connect(MONGO_URI)

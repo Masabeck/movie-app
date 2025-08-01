@@ -1,17 +1,44 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  Box, Button, CircularProgress, Grid,
+  Tab, Tabs, TextField, Typography
+} from '@mui/material';
 import { searchMovies } from '../api/tmdb';
+import { getFavorites, addFavorite, removeFavorite } from '../api/favorites';
 import MESSAGES from '../constants/messages';
 import MovieCard from './MovieCard';
 import MovieModal from './MovieModal';
+import { Movie } from '../types/Movie';
 
 const MovieSearch = () => {
   const [query, setQuery] = useState('');
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [favorites, setFavorites] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const [selectedMovie, setSelectedMovie] = useState<any | null>(null);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'search' | 'favorites'>('search');
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const data = await getFavorites();
+        if (Array.isArray(data)) {
+          setFavorites(data);
+        } else {
+            console.error('Favorites response was not an array');
+            setFavorites([]);
+            }
+          } catch (err) {
+          console.error('Failed to load favorites:', err);
+      setFavorites([]);
+    }
+  };
+
+  fetchFavorites();
+}, []);
+
 
   const handleSearch = async () => {
     if (!query.trim()) {
@@ -32,7 +59,28 @@ const MovieSearch = () => {
     }
   };
 
-  const openModal = (movie: any) => {
+  const isFavorite = (movieId: number) =>
+    Array.isArray(favorites) && favorites.some((fav) => fav.id === movieId);
+
+  const toggleFavorite = async (movie: Movie) => {
+    try {
+      if (isFavorite(movie.id)) {
+        await removeFavorite(movie.id);
+        setFavorites((prev) =>
+          Array.isArray(prev) ? prev.filter((fav) => fav.id !== movie.id) : []
+        );
+      } else {
+        await addFavorite(movie);
+        setFavorites((prev) =>
+          Array.isArray(prev) ? [...prev, movie] : [movie]
+        );
+      }
+    } catch (err) {
+      console.error('Favorite toggle failed', err);
+    }
+  };
+
+  const openModal = (movie: Movie) => {
     setSelectedMovie(movie);
     setIsModalOpen(true);
   };
@@ -43,30 +91,73 @@ const MovieSearch = () => {
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>Search Movies</h2>
-      <input
-        type="text"
-        placeholder="Enter movie title"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        style={{ padding: '0.5rem', width: '300px' }}
-      />
-      <button onClick={handleSearch} style={{ marginLeft: '0.5rem', padding: '0.5rem 1rem' }}>
-        Search
-      </button>
+    <Box sx={{ padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Movies
+      </Typography>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Tabs
+        value={activeTab}
+        onChange={(_, newValue) => setActiveTab(newValue)}
+        sx={{ mb: 2 }}
+      >
+        <Tab label="Search" value="search" />
+        <Tab label="Favorites" value="favorites" />
+      </Tabs>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} onClick={() => openModal(movie)} />
-        ))}
-      </div>
+      {activeTab === 'search' && (
+        <>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <TextField
+              fullWidth
+              label="Enter movie title"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button variant="contained" onClick={handleSearch}>
+              Search
+            </Button>
+          </Box>
+
+          {loading && <CircularProgress />}
+          {error && <Typography color="error">{error}</Typography>}
+
+          {Array.isArray(movies) && movies.length > 0 && (
+            <Grid container justifyContent="center">
+              {movies.map((movie) => (
+                <MovieCard
+                  key={movie.id}
+                  movie={movie}
+                  onClick={() => openModal(movie)}
+                  isFavorite={isFavorite(movie.id)}
+                  onToggleFavorite={() => toggleFavorite(movie)}
+                />
+              ))}
+            </Grid>
+          )}
+        </>
+      )}
+
+      {activeTab === 'favorites' && (
+        <Grid container justifyContent="center">
+          {Array.isArray(favorites) && favorites.length > 0 ? (
+            favorites.map((movie) => (
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                onClick={() => openModal(movie)}
+                isFavorite={true}
+                onToggleFavorite={() => toggleFavorite(movie)}
+              />
+            ))
+          ) : (
+            <Typography>No favorite movies yet.</Typography>
+          )}
+        </Grid>
+      )}
 
       <MovieModal isOpen={isModalOpen} onClose={closeModal} movie={selectedMovie} />
-    </div>
+    </Box>
   );
 };
 

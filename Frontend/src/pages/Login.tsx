@@ -1,7 +1,15 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import MESSAGES from "../constants/messages";
+import MESSAGES from '../constants/messages';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Alert,
+  Link,
+} from '@mui/material';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -46,33 +54,59 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
+    <Box
+      maxWidth={400}
+      mx="auto"
+      mt={5}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap={2}
+    >
+      <Typography variant="h4" component="h1">
+        Film App
+      </Typography>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <TextField
           type="email"
-          placeholder="Email"
+          label="Email"
+          fullWidth
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
+          margin="normal"
         />
-        <br />
-        <input
+        <TextField
           type="password"
-          placeholder="Password"
+          label="Password"
+          fullWidth
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
+          margin="normal"
         />
-        <br />
-        <button type="submit">Login</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+        >
+          Login
+        </Button>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
       </form>
-
-      <p style={{ marginTop: '1rem' }}>
-        Don't have an account? <a href="/signup">Sign up</a>
-      </p>
-    </div>
+      <Typography variant="body2" mt={2}>
+        Don't have an account?{' '}
+        <Link href="/signup" underline="hover">
+          Sign up
+        </Link>
+      </Typography>
+    </Box>
   );
 };
 

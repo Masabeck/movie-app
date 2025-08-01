@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MESSAGES from '../constants/messages';
+import { Box, Button, TextField, Typography, Alert } from '@mui/material';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -37,8 +38,6 @@ const Signup = () => {
         email,
         password,
       });
-
-      // ✅ Do not log user in immediately — go to login screen
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || MESSAGES.SIGNUP_FAILED);
@@ -46,29 +45,33 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <h2>Sign Up</h2>
+    <Box maxWidth={400} mx="auto" mt={5} p={3} boxShadow={3} borderRadius={2}>
+      <Typography variant="h5" mb={2}>Sign Up</Typography>
       <form onSubmit={handleSubmit}>
-        <input
+        <TextField
+          fullWidth
           type="email"
-          placeholder="Email"
+          label="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
+          margin="normal"
           required
         />
-        <br />
-        <input
+        <TextField
+          fullWidth
           type="password"
-          placeholder="Password"
+          label="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          margin="normal"
           required
         />
-        <br />
-        <button type="submit">Register</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+          Register
+        </Button>
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
       </form>
-    </div>
+    </Box>
   );
 };
 

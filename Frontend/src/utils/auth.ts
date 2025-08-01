@@ -1,12 +1,24 @@
-export const getTokenPayload = (): any | null => {
+type TokenPayload = {
+  id: string;
+  email?: string;
+  iat?: number;
+  exp?: number;
+};
+
+export const getTokenPayload = (): TokenPayload | null => {
   const token = localStorage.getItem('token');
   if (!token) return null;
 
   try {
     const payload = token.split('.')[1];
-    const decoded = atob(payload);
-    return JSON.parse(decoded);
+    if (!payload) return null;
+
+    const decoded = JSON.parse(atob(payload));
+    if (typeof decoded !== 'object' || decoded === null) return null;
+
+    return decoded as TokenPayload;
   } catch (err) {
+    console.error('Failed to parse token payload:', err);
     return null;
   }
 };

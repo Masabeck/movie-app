@@ -1,10 +1,18 @@
 // src/models/User.ts
-
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  favorites: [
+    {
+      id: { type: Number, required: true },
+      title: String,
+      poster_path: String,
+      release_date: String,
+      vote_average: Number,
+    }
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
