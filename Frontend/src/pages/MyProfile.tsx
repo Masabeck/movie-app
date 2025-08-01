@@ -6,6 +6,7 @@ import { getFavorites } from '../api/favorites';
 import { getTokenPayload } from '../utils/auth';
 import MovieCard from '../components/MovieCard';
 import { Movie } from '../types/Movie';
+import MESSAGES from '../constants/messages';
 
 const MyProfile = () => {
   const [favorites, setFavorites] = useState<Movie[]>([]);
@@ -18,11 +19,11 @@ const MyProfile = () => {
         if (Array.isArray(data)) {
           setFavorites(data);
         } else {
-          console.error('Favorites response was not an array');
+          console.error(MESSAGES.FAVORITES_NOT_ARRAY);
           setFavorites([]);
         }
       } catch (err) {
-        console.error('Failed to load favorites:', err);
+        console.error(MESSAGES.FAVORITES_FETCH_FAILED, err);
         setFavorites([]);
       }
     };

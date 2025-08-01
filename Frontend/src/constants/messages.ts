@@ -7,6 +7,9 @@ const MESSAGES = {
   LOGIN_FAILED: "Login failed",
   SIGNUP_FAILED: "Signup failed",
   MOVIE_FETCH_FAILED: "Could not fetch movies. Please try again later.",
+  FAVORITES_NOT_ARRAY: "Favorites response was not an array.",
+  FAVORITES_FETCH_FAILED: "Failed to load favorites.",
+  FAVORITE_TOGGLE_FAILED: "Favorite toggle failed",
 };
 
 export default MESSAGES;

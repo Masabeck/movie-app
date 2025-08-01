@@ -27,11 +27,11 @@ const MovieSearch = () => {
         if (Array.isArray(data)) {
           setFavorites(data);
         } else {
-            console.error('Favorites response was not an array');
+            console.error(MESSAGES.FAVORITES_NOT_ARRAY);
             setFavorites([]);
             }
           } catch (err) {
-          console.error('Failed to load favorites:', err);
+          console.error(MESSAGES.FAVORITES_FETCH_FAILED, err);
       setFavorites([]);
     }
   };
@@ -76,7 +76,7 @@ const MovieSearch = () => {
         );
       }
     } catch (err) {
-      console.error('Favorite toggle failed', err);
+      console.error(MESSAGES.FAVORITE_TOGGLE_FAILED, err);
     }
   };
 
