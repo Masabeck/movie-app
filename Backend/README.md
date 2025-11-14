@@ -1,6 +1,6 @@
 # MERN Auth Backend
 
-A secure user authentication backend built with Node.js, Express, TypeScript, and MongoDB using JWT for authentication.
+A secure user authentication backend built with Node.js, Express, TypeScript, and MongoDB using JWT for authentication purposes.
 
 ---
 
